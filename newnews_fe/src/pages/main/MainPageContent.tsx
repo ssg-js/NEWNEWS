@@ -14,22 +14,22 @@ const SIZE = 100;
 const SEC = 3;
 
 interface newsMain {
-    newsId : number,
-    preNewsId : number,
-    title : string,
-    press : string,
-    newsImage : string,
+    newsId: number,
+    preNewsId: number,
+    title: string,
+    press: string,
+    newsImage: string,
 };
-const categoryName: Record<string, number>= {
-    "연관뉴스" : 1,
-    "경제" : 1,
-    "정치" : 2,
-    "사회" : 3,
-    "생활/문화" : 4,
-    "IT/과학" : 5,
+const categoryName: Record<string, number> = {
+    "연관뉴스": 1,
+    "경제": 1,
+    "정치": 2,
+    "사회": 3,
+    "생활/문화": 4,
+    "IT/과학": 5,
 }
 
-export function MainPageContent(){
+export function MainPageContent() {
     // 로그인 정보
     const isLogin = useRecoilValue(LoginState)[0];
     // 메인 뉴스 정보
@@ -49,22 +49,22 @@ export function MainPageContent(){
 
     const onClickToggleLoginModal = useCallback(() => {
         setNotLoginModal(!notLoginModal);
-        setTopicState({ topics: topicState.topics, focused: topicState.topics[1]})
+        setTopicState({ topics: topicState.topics, focused: topicState.topics[1] })
     }, [notLoginModal]);
     const onClickToggleNewsModal = useCallback(() => {
         setNoNewsModal(!noNewsModal);
-        setTopicState({ topics: topicState.topics, focused: topicState.topics[1]})
+        setTopicState({ topics: topicState.topics, focused: topicState.topics[1] })
     }, [noNewsModal]);
 
     // 현재 보고있는 뉴스의 index
     let ioIndex: any;
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         setCategoryId(categoryName[topicState.focused])
         // 뉴스별 useQuery 다르게 요청
         if (topicState.focused === "연관뉴스") {
             if (isLogin.isLogin) {
-                useNewsAfter.mutate({ userId: isLogin.id, page: 0, size: SIZE}, {
+                useNewsAfter.mutate({ userId: isLogin.id, page: 0, size: SIZE }, {
                     onSuccess: (data) => {
                         if (data.data.content.length > 0) {
                             setNews(data.data.content);
@@ -85,8 +85,8 @@ export function MainPageContent(){
             }
         }
     }, [topicState.focused, maincategoryNews.isSuccess])
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         const newsElems = document.querySelectorAll<HTMLElement>('.main-page-content-card');
         for (let i = 0; i < newsElems.length; i++) {
             newsElems[i].id = String(i)
@@ -108,33 +108,21 @@ export function MainPageContent(){
                 // 화면에 노출 상태에 따라 해당 엘리먼트의 class를 컨트롤
                 if (entry.isIntersecting) {
                     ioIndex = Number(target.id);
-                    if (newsElems[ioIndex - 1]) {
-                        // newsElems[ioIndex - 1].classList.add();
-                    }
-                    if (newsElems[ioIndex]) {
-                        // newsElems[ioIndex].classList.add();
-                    }
-                    if (newsElems[ioIndex + 1]) {
-                        // newsElems[ioIndex + 1].classList.add();
-                    }
-                } else {
-                    // $target.classList.remove("screening");
                 }
             });
         }, options);
         for (let i = 0; i < newsElems.length; i++) {
             // 카드들 observer 등록
             io.observe(newsElems[i]);
-            // 카드들 좌우 슬라이드 동작 추가(모바일)
         }
     }, [news])
 
 
     return (
         <div className="main-page-content">
-            {news && news.map((news, index)=>{return <MainPageContentCard categoryId={categoryId} newsId={news.newsId} preNewsId={news.preNewsId} title={news.title} press={news.press} newsImage={news.newsImage} newsIndex={index} key={index}/>})}
-            {notLoginModal && <MemberShipModal onClickToggleModal={ onClickToggleLoginModal } children={`로그인시 이용가능합니다.`}/>}
-            {noNewsModal && <MemberShipModal onClickToggleModal={ onClickToggleNewsModal } children={`연관뉴스가 없습니다.`}/>}
+            {news && news.map((news, index) => { return <MainPageContentCard categoryId={categoryId} newsId={news.newsId} preNewsId={news.preNewsId} title={news.title} press={news.press} newsImage={news.newsImage} newsIndex={index} key={index} /> })}
+            {notLoginModal && <MemberShipModal onClickToggleModal={onClickToggleLoginModal} children={`로그인시 이용가능합니다.`} />}
+            {noNewsModal && <MemberShipModal onClickToggleModal={onClickToggleNewsModal} children={`연관뉴스가 없습니다.`} />}
         </div>
     )
 }
