@@ -86,37 +86,6 @@ export function MainPageContent() {
         }
     }, [topicState.focused, maincategoryNews.isSuccess])
 
-    useEffect(() => {
-        const newsElems = document.querySelectorAll<HTMLElement>('.main-page-content-card');
-        for (let i = 0; i < newsElems.length; i++) {
-            newsElems[i].id = String(i)
-        }
-        // intersectionObserver 옵션
-        // root : viewport로 판단할 타겟
-        // threshold: 관찰할 타겟이 얼마나 보일때 callback 할 지, 0~1
-        const options = {
-            root: document.querySelector('.main-page-content'),
-            rootMargin: '0px',
-            threshold: 0.99
-        }
-        const io = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                // entry의 target으로 DOM에 접근
-                const target = entry.target;
-                const newsElems = document.querySelectorAll<HTMLElement>('.main-page-content-card');
-                let news;
-                // 화면에 노출 상태에 따라 해당 엘리먼트의 class를 컨트롤
-                if (entry.isIntersecting) {
-                    ioIndex = Number(target.id);
-                }
-            });
-        }, options);
-        for (let i = 0; i < newsElems.length; i++) {
-            // 카드들 observer 등록
-            io.observe(newsElems[i]);
-        }
-    }, [news])
-
 
     return (
         <div className="main-page-content">
